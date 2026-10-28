@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>情商外挂 · 话说出口之前，先过一遍</title>
+<meta name="description" content="把一句带火气的话，改成对方听得进去的说法。方法来自《非暴力沟通》。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231A1814'/%3E%3Cpath d='M18 22h28a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H30l-8 7v-7h-4a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4z' fill='none' stroke='%23F4F1EC' stroke-width='3.5' stroke-linejoin='round'/%3E%3Cpath d='M24 32h16' stroke='%23C8643A' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f3efe8;
+    --surface: #fbf9f5;
+    --surface-2: #f7f3ec;
+    --ink: #1a1814;
+    --ink-2: #3d3832;
+    --muted: #7b746a;
+    --faint: #a69f94;
+    --line: rgba(26, 24, 20, 0.08);
+    --line-2: rgba(26, 24, 20, 0.14);
+    --accent: #b8562c;
+    --accent-ink: #8e3f1d;
+    --accent-soft: #f4e2d6;
+    --risk-high: #b23a2a;
+    --risk-mid: #b7791f;
+    --risk-low: #5f7a52;
+    --shadow: 0 1px 2px rgba(60, 40, 20, 0.04), 0 8px 24px -12px rgba(60, 40, 20, 0.14);
+    --shadow-lg: 0 2px 4px rgba(60, 40, 20, 0.04), 0 24px 48px -24px rgba(60, 40, 20, 0.22);
+    --serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(184, 86, 44, 0.07), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(95, 122, 82, 0.05), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font: 16px/1.7 var(--sans);
+    font-feature-settings: "palt";
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.28 0 0 0 0 0.2 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  button, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+
+  .wrap { position: relative; max-width: 1120px; margin: 0 auto; padding: 28px 24px 72px; }
+
+  /* top bar */
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 36px; height: 36px; border-radius: 11px;
+    background: var(--ink);
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 14px -6px rgba(26,24,20,0.5);
+  }
+  .brand-name { font-family: var(--serif); font-size: 19px; font-weight: 700; letter-spacing: 0.06em; }
+  .brand-tag { color: var(--muted); font-size: 13px; letter-spacing: 0.02em; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--muted);
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(251, 249, 245, 0.7);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--risk-low); box-shadow: 0 0 0 3px rgba(95,122,82,0.15); }
+  .status.mock .dot { background: var(--risk-mid); box-shadow: 0 0 0 3px rgba(183,121,31,0.18); }
+
+  /* hero */
+  .hero { margin: 64px 0 36px; max-width: 760px; }
+  .eyebrow { font-size: 13px; color: var(--accent-ink); letter-spacing: 0.12em; margin: 0 0 18px; }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(36px, 5.6vw, 60px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 em { font-style: normal; color: var(--accent); position: relative; }
+  .lede { color: var(--ink-2); font-size: 17px; max-width: 34em; margin: 20px 0 0; text-wrap: pretty; }
+
+  .mock-note {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin: 0 0 18px; padding: 12px 16px;
+    background: #fbf1da; border: 1px solid #ecd59b; color: #6e5110;
+    border-radius: 14px; font-size: 14px;
+  }
+
+  /* composer */
+  .composer {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .composer-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 16px 18px 0;
+  }
+  .seg {
+    display: inline-flex; padding: 4px; border-radius: 14px;
+    background: var(--surface-2); border: 1px solid var(--line);
+  }
+  .seg button {
+    border: 0; background: transparent; padding: 8px 16px; border-radius: 10px;
+    font-size: 14.5px; color: var(--muted);
+    transition: background .25s var(--ease), color .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .seg button.on { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(26,24,20,0.08), 0 2px 8px -4px rgba(26,24,20,0.18); }
+  .hint { font-size: 12.5px; color: var(--faint); }
+  kbd {
+    font: 500 11.5px/1 var(--sans); padding: 3px 6px; border-radius: 6px;
+    border: 1px solid var(--line-2); border-bottom-width: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  textarea {
+    display: block; width: 100%;
+    min-height: 168px; resize: vertical;
+    border: 0; outline: 0; background: transparent;
+    padding: 18px 22px 8px;
+    font-family: var(--serif); font-size: 21px; line-height: 1.7; color: var(--ink);
+  }
+  textarea::placeholder { color: var(--faint); }
+
+  .options {
+    display: grid; grid-template-columns: 1fr; gap: 14px;
+    padding: 16px 22px 18px;
+    border-top: 1px dashed var(--line-2);
+    background: linear-gradient(180deg, rgba(247,243,236,0.0), rgba(247,243,236,0.6));
+  }
+  .opt { display: grid; grid-template-columns: 64px 1fr; align-items: start; gap: 12px; }
+  .opt-name { font-size: 13px; color: var(--muted); padding-top: 7px; letter-spacing: 0.04em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--line-2); background: var(--surface);
+    padding: 6px 14px; border-radius: 10px; font-size: 14px; color: var(--ink-2);
+    transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+  }
+  .chip:hover { border-color: rgba(184,86,44,0.45); color: var(--ink); }
+  .chip:active { transform: scale(0.97); }
+  .chip.on { background: var(--ink); border-color: var(--ink); color: #f6f2ea; }
+
+  .composer-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 18px 16px 22px;
+    border-top: 1px solid var(--line);
+  }
+  .count { font-size: 13px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .count.warn { color: var(--risk-mid); }
+  .go {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 0; border-radius: 14px; padding: 12px 22px;
+    background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; letter-spacing: 0.04em;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset, 0 10px 20px -10px rgba(184,86,44,0.7);
+    transition: transform .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .go:hover { background: #a94d26; transform: translateY(-1px); box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset, 0 14px 26px -12px rgba(184,86,44,0.75); }
+  .go:active { transform: translateY(0) scale(0.98); }
+  .go:disabled { opacity: 0.6; cursor: default; transform: none; }
+  .go svg { transition: transform .3s var(--ease); }
+  .go:hover svg { transform: translateX(3px); }
+
+  .err {
+    margin: 16px 0 0; padding: 12px 16px; border-radius: 14px;
+    background: #f8e3df; border: 1px solid #ebc3bb; color: #7d2a1e; font-size: 14.5px;
+  }
+
+  /* result */
+  .result { margin-top: 28px; display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .result .col { display: contents; }
+  #checkPanel { order: 1; } #answerPanel { order: 2; } #changesPanel { order: 3; }
+  .mock-result {
+    grid-column: 1 / -1; order: 0; margin: 0;
+    padding: 14px 18px; border-radius: 16px;
+    background: #fbf1da; border: 1px solid #ecd59b; color: #6e5110;
+    font-size: 15px; font-weight: 600;
+  }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+    box-shadow: var(--shadow); padding: 22px 24px;
+  }
+  .panel-title {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-size: 13px; color: var(--muted); letter-spacing: 0.08em; margin: 0 0 14px;
+  }
+  .meter { display: inline-flex; align-items: center; gap: 10px; font-size: 13.5px; letter-spacing: 0; }
+  .meter-bars { display: inline-flex; gap: 4px; }
+  .meter-bars i { width: 18px; height: 6px; border-radius: 3px; background: var(--line-2); transition: background .4s var(--ease); }
+  .meter.low .meter-bars i:nth-child(-n+1) { background: var(--risk-low); }
+  .meter.medium .meter-bars i:nth-child(-n+2) { background: var(--risk-mid); }
+  .meter.high .meter-bars i { background: var(--risk-high); }
+  .meter.low b { color: var(--risk-low); } .meter.medium b { color: var(--risk-mid); } .meter.high b { color: var(--risk-high); }
+
+  .original { font-family: var(--serif); font-size: 19px; line-height: 1.85; color: var(--ink-2); margin: 0; white-space: pre-wrap; }
+  .original mark {
+    background: linear-gradient(180deg, transparent 58%, rgba(178,58,42,0.18) 58%);
+    color: var(--risk-high); padding: 0 1px;
+    text-decoration: underline wavy rgba(178,58,42,0.55); text-underline-offset: 6px; text-decoration-thickness: 1.2px;
+  }
+  .triggers { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
+  .triggers li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: baseline; font-size: 14.5px; }
+  .triggers .tag { font-family: var(--serif); color: var(--risk-high); background: rgba(178,58,42,0.08); padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+  .triggers .why { color: var(--muted); }
+  .clean { color: var(--risk-low); font-size: 14.5px; margin: 14px 0 0; }
+
+  .answer {
+    position: relative; overflow: hidden;
+    background: var(--ink); color: #f4efe6; border-color: transparent;
+    box-shadow: 0 30px 60px -30px rgba(26,24,20,0.55);
+  }
+  .answer::after {
+    content: ""; position: absolute; inset: auto -20% -60% auto; width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(200,100,58,0.28), transparent);
+    pointer-events: none;
+  }
+  .answer .panel-title { color: rgba(244,239,230,0.6); }
+  .message { position: relative; font-family: var(--serif); font-size: 22px; line-height: 1.85; margin: 0; white-space: pre-wrap; text-wrap: pretty; }
+  .message .slot { background: rgba(244,226,214,0.16); color: #f3c9ae; border-radius: 6px; padding: 0 4px; }
+  .short {
+    position: relative; margin: 22px 0 0; padding-top: 18px; border-top: 1px solid rgba(244,239,230,0.12);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  }
+  .short p { margin: 0; font-size: 15.5px; color: rgba(244,239,230,0.82); }
+  .short small { display: block; font-size: 12px; color: rgba(244,239,230,0.5); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .copy {
+    flex: none; display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--line-2); background: var(--surface); color: var(--ink-2);
+    border-radius: 10px; padding: 6px 12px; font-size: 13px;
+    transition: background .2s var(--ease), transform .2s var(--ease);
+  }
+  .copy:active { transform: scale(0.97); }
+  .answer .copy { background: rgba(244,239,230,0.08); border-color: rgba(244,239,230,0.16); color: #f4efe6; }
+  .answer .copy:hover { background: rgba(244,239,230,0.14); }
+  .copy.done { color: #b9d3a8 !important; }
+
+  .changes { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: c; }
+  .changes li { counter-increment: c; display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 15px; color: var(--ink-2); }
+  .changes li::before {
+    content: counter(c); width: 22px; height: 22px; border-radius: 7px; margin-top: 2px;
+    display: grid; place-items: center; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+    background: var(--accent-soft); color: var(--accent-ink);
+  }
+  .ofnr { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; }
+  .ofnr div { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .ofnr dt { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 4px; }
+  .ofnr dd { margin: 0; font-size: 14.5px; color: var(--ink); }
+
+  /* skeleton */
+  .skel { display: grid; gap: 10px; }
+  .skel span {
+    display: block; height: 14px; border-radius: 7px;
+    background: linear-gradient(90deg, rgba(26,24,20,0.06), rgba(26,24,20,0.11), rgba(26,24,20,0.06));
+    background-size: 200% 100%; animation: shimmer 1.4s linear infinite;
+  }
+  .answer .skel span { background: linear-gradient(90deg, rgba(244,239,230,0.08), rgba(244,239,230,0.16), rgba(244,239,230,0.08)); background-size: 200% 100%; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  .reveal { opacity: 0; transform: translateY(12px); animation: rise .6s var(--ease) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  /* top-right actions */
+  .actions { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--line); background: rgba(251,249,245,0.7); backdrop-filter: blur(8px);
+    border-radius: 999px; padding: 6px 12px; font-size: 12.5px; color: var(--ink-2);
+    transition: border-color .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+  }
+  .icon-btn:hover { border-color: rgba(184,86,44,0.45); color: var(--ink); }
+  .icon-btn:active { transform: scale(0.97); }
+
+  /* model select */
+  .head-right { display: flex; align-items: center; gap: 14px; }
+  .model {
+    position: relative; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .model select {
+    appearance: none; -webkit-appearance: none;
+    border: 1px solid var(--line-2); background: var(--surface);
+    border-radius: 10px; padding: 6px 30px 6px 12px;
+    font: 500 13px/1.4 var(--sans); color: var(--ink); max-width: 220px; text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .model::after {
+    content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; margin-top: -5px;
+    border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg); pointer-events: none;
+  }
+
+  /* drawer */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(26,24,20,0.28); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); z-index: 10;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100vw); z-index: 11;
+    background: var(--surface); border-left: 1px solid var(--line);
+    box-shadow: -30px 0 60px -30px rgba(26,24,20,0.35);
+    transform: translateX(100%); transition: transform .4s var(--ease);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: none; }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 12px; }
+  .drawer-head h2 { font-family: var(--serif); font-size: 22px; margin: 0; }
+  .close { border: 0; background: transparent; font-size: 22px; line-height: 1; color: var(--muted); padding: 4px 8px; border-radius: 8px; }
+  .close:hover { color: var(--ink); background: var(--surface-2); }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 6px 24px 24px; }
+  .drawer-foot { padding: 14px 24px 20px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .drawer-note { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+  .field { display: grid; gap: 6px; margin-bottom: 16px; }
+  .field > span { font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
+  .field input, .field select {
+    width: 100%; border: 1px solid var(--line-2); background: #fff; border-radius: 12px;
+    padding: 10px 12px; font: 14.5px/1.4 var(--sans); color: var(--ink);
+  }
+  .field input:focus, .field select:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  .field small { font-size: 12px; color: var(--faint); }
+  .row { display: flex; gap: 8px; }
+  .row input { flex: 1; }
+  .btn-2 {
+    flex: none; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--ink);
+    border-radius: 12px; padding: 9px 14px; font-size: 14px;
+    transition: border-color .2s var(--ease), transform .2s var(--ease);
+  }
+  .btn-2:hover { border-color: rgba(184,86,44,0.45); }
+  .btn-2:active { transform: scale(0.98); }
+  .btn-2:disabled { opacity: .55; }
+  .model-list {
+    border: 1px solid var(--line-2); border-radius: 14px; background: #fff;
+    max-height: 300px; overflow-y: auto; padding: 4px;
+  }
+  .model-item {
+    display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 10px; font-size: 14px; cursor: pointer;
+  }
+  .model-item:hover { background: var(--surface-2); }
+  .model-item input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+  .model-item code { font: 13px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color: var(--ink); word-break: break-all; }
+  .model-item .def {
+    border: 0; background: transparent; font-size: 12px; color: var(--faint); padding: 2px 8px; border-radius: 6px;
+  }
+  .model-item .def.on { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+  .empty-list { padding: 14px; font-size: 13.5px; color: var(--faint); text-align: center; }
+  .msg-ok { color: var(--risk-low); font-size: 13.5px; }
+  .msg-bad { color: var(--risk-high); font-size: 13.5px; }
+
+  footer { margin-top: 56px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--faint); font-size: 12.5px; }
+  .hide { display: none !important; }
+
+  @media (min-width: 900px) {
+    .result { grid-template-columns: 0.92fr 1.08fr; align-items: start; }
+    .result .col { display: grid; gap: 18px; }
+    #checkPanel, #answerPanel, #changesPanel { order: 0; }
+    .options { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 18px 16px 48px; }
+    .hero { margin: 40px 0 26px; }
+    .brand-tag { display: none; }
+    textarea { font-size: 19px; padding: 16px 18px 6px; min-height: 140px; }
+    .options { padding: 14px 18px 16px; }
+    .opt { grid-template-columns: 1fr; gap: 6px; }
+    .opt-name { padding-top: 0; }
+    .composer-head .hint { display: none; }
+    .message { font-size: 20px; }
+    .ofnr { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 64 64"><path d="M14 18h36a5 5 0 0 1 5 5v16a5 5 0 0 1-5 5H30l-10 9v-9h-6a5 5 0 0 1-5-5V23a5 5 0 0 1 5-5z" fill="none" stroke="#F4F1EC" stroke-width="5" stroke-linejoin="round"/><path d="M22 31h20" stroke="#C8643A" stroke-width="5" stroke-linecap="round"/></svg>
+      </span>
+      <div>
+        <div class="brand-name">情商外挂</div>
+      </div>
+      <span class="brand-tag">基于《非暴力沟通》</span>
+    </div>
+    <div class="actions">
+      <span class="status" id="status"><span class="dot"></span><span id="statusText">已连接</span></span>
+      <button class="icon-btn" id="openSettings" aria-label="设置">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        设置
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">发送之前 · 最后一道关</p>
+      <h1>话说出口之前，<br>先让它<em>过一遍</em>。</h1>
+      <p class="lede">选好对方是谁，它会先指出原话里最容易惹毛人的那几个字，再给你一条能直接发的说法。该坚定的地方，不会替你改软。</p>
+    </section>
+
+    <p class="mock-note hide" id="mock">
+      <span aria-hidden="true">●</span>
+      <span>现在是示例模式：不调用模型，不管输入什么，结果都是同一段固定示例。去掉 MOCK=1 重新启动，才会真正改写。</span>
+    </p>
+
+    <section class="composer" aria-label="输入">
+      <div class="composer-head">
+        <div class="seg" data-key="mode" role="tablist">
+          <button class="on" data-value="send" role="tab">我想发出去的话</button>
+          <button data-value="reply" role="tab">别人发来的，帮我回</button>
+        </div>
+        <div class="head-right">
+          <label class="model">模型<select id="model" aria-label="选择模型"></select></label>
+          <span class="hint"><kbd>⌘</kbd> <kbd>Enter</kbd> 快速改写</span>
+        </div>
+      </div>
+
+      <textarea id="text" maxlength="800" aria-label="原话"></textarea>
+
+      <div class="options">
+        <div class="opt">
+          <span class="opt-name">对方是</span>
+          <div class="chips" data-key="who">
+            <button class="chip" data-value="client">客户</button>
+            <button class="chip" data-value="boss">上级</button>
+            <button class="chip on" data-value="colleague">同事</button>
+            <button class="chip" data-value="report">下属</button>
+            <button class="chip" data-value="partner">伴侣</button>
+            <button class="chip" data-value="family">家人</button>
+            <button class="chip" data-value="friend">朋友</button>
+          </div>
+        </div>
+        <div class="opt">
+          <span class="opt-name">语气</span>
+          <div class="chips" data-key="tone">
+            <button class="chip on" data-value="gentle">温和</button>
+            <button class="chip" data-value="firm">坚定</button>
+            <button class="chip" data-value="direct">直接</button>
+          </div>
+        </div>
+        <div class="opt">
+          <span class="opt-name">这次想</span>
+          <div class="chips" data-key="goal">
+            <button class="chip on" data-value="auto">自动判断</button>
+            <button class="chip" data-value="push">催进度</button>
+            <button class="chip" data-value="decline">拒绝</button>
+            <button class="chip" data-value="apologize">道歉</button>
+            <button class="chip" data-value="ask">提要求</button>
+            <button class="chip" data-value="complain">表达不满</button>
+            <button class="chip" data-value="comfort">安慰对方</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="composer-foot">
+        <span class="count" id="count">0 / 800</span>
+        <button class="go" id="go">
+          <span id="goText">帮我改</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <p class="err hide" id="err" role="alert"></p>
+
+    <section class="result hide" id="result" aria-live="polite">
+      <p class="mock-result hide" id="mockResult">这是示例模式的固定示例，不是对你这句话的改写。在终端按 Ctrl + C 停掉服务，去掉 MOCK=1，用 python3 app.py 重新启动。</p>
+      <div class="col">
+        <article class="panel" id="checkPanel">
+          <h2 class="panel-title">
+            <span id="checkTitle">原话体检</span>
+            <span class="meter" id="meter"><span class="meter-bars"><i></i><i></i><i></i></span><b id="riskText"></b></span>
+          </h2>
+          <p class="original" id="original"></p>
+          <ul class="triggers" id="triggers"></ul>
+          <p class="clean hide" id="clean">原话没什么问题，可以直接发。</p>
+        </article>
+        <article class="panel" id="changesPanel">
+          <h2 class="panel-title"><span>改了哪里</span></h2>
+          <ol class="changes" id="changes"></ol>
+          <dl class="ofnr" id="ofnr">
+            <div><dt>观察</dt><dd id="o"></dd></div>
+            <div><dt>感受</dt><dd id="f"></dd></div>
+            <div><dt>需要</dt><dd id="n"></dd></div>
+            <div><dt>请求</dt><dd id="r"></dd></div>
+          </dl>
+        </article>
+      </div>
+      <article class="panel answer" id="answerPanel">
+        <h2 class="panel-title">
+          <span>可以直接发</span>
+          <button class="copy" data-target="message">复制</button>
+        </h2>
+        <p class="message" id="message"></p>
+        <div class="short">
+          <p><small>一句话版</small><span id="short"></span></p>
+          <button class="copy" data-target="short">复制</button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>AYi 做的小工具 · 结果仅供参考，发之前自己再读一遍</span>
+    <span>不保存任何记录；输入的内容会发送给模型接口处理，敏感信息请先删减</span>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="设置" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>设置</h2>
+    <button class="close" id="closeSettings" aria-label="关闭">×</button>
+  </div>
+
+  <div class="drawer-body" id="lockView">
+    <p class="drawer-note">只有工具的主人能改设置。设置口令在启动工具的终端窗口里，那一行写着“设置口令：……”。</p>
+    <label class="field"><span>设置口令</span><input id="token" type="password" autocomplete="off" placeholder="从终端里复制过来"></label>
+    <p id="lockMsg"></p>
+  </div>
+
+  <div class="drawer-body hide" id="configView">
+    <p class="drawer-note">接口要兼容 OpenAI 格式。密钥只保存在这台电脑上的 config.json 里，页面上只显示打码后的样子。</p>
+    <label class="field"><span>服务商</span>
+      <select id="preset">
+        <option value="">自定义</option>
+        <option value="https://api.openai.com/v1">OpenAI</option>
+        <option value="https://api.deepseek.com/v1">DeepSeek</option>
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1">阿里云百炼（通义千问）</option>
+        <option value="https://api.moonshot.cn/v1">月之暗面 Kimi</option>
+        <option value="https://open.bigmodel.cn/api/paas/v4">智谱 GLM</option>
+        <option value="https://api.siliconflow.cn/v1">硅基流动</option>
+        <option value="https://openrouter.ai/api/v1">OpenRouter</option>
+        <option value="https://api.aisa.one/v1">AIsa</option>
+      </select>
+      <small>选一个会自动填好下面的地址，地址以各平台文档为准</small>
+    </label>
+    <label class="field"><span>接口地址</span><input id="baseUrl" type="url" placeholder="https://.../v1" autocomplete="off"></label>
+    <label class="field"><span>API Key</span><input id="apiKey" type="password" autocomplete="off" placeholder="不改就留空"><small id="keyHint"></small></label>
+
+    <div class="field">
+      <span>允许使用的模型</span>
+      <div class="row">
+        <input id="modelSearch" type="search" placeholder="搜索，或输入模型名后点添加" autocomplete="off">
+        <button class="btn-2" id="addModel">添加</button>
+      </div>
+      <button class="btn-2" id="fetchModels" style="justify-self:start">从接口拉取模型列表</button>
+      <div class="model-list" id="modelList"></div>
+      <small>勾选的模型会出现在首页的下拉框里，使用者只能在这些里面选。点“设为默认”指定默认模型。</small>
+    </div>
+
+    <div class="field">
+      <span>次数上限（所有使用者加起来）</span>
+      <div class="row">
+        <label class="field" style="flex:1;margin:0"><small>每分钟最多</small><input id="limitMin" type="number" min="0" step="1"></label>
+        <label class="field" style="flex:1;margin:0"><small>每天最多</small><input id="limitDay" type="number" min="0" step="1"></label>
+      </div>
+      <small id="usage">每次改写都花你的模型费用，分享出去之前建议设好。填 0 表示不限。</small>
+    </div>
+  </div>
+
+  <div class="drawer-foot">
+    <span id="saveMsg"></span>
+    <button class="go" id="drawerAction"><span id="drawerActionText">解锁</span></button>
+  </div>
+</aside>
+
+<script>
+  const state = { mode: "send", who: "colleague", tone: "gentle", goal: "auto" };
+  const $ = (id) => document.getElementById(id);
+  const text = $("text");
+
+  const examples = {
+    send: {
+      client: "上次就说这周给反馈，又拖了，你们到底还做不做？",
+      boss: "这个需求根本做不完，时间给得太离谱了。",
+      colleague: "你怎么又拖到现在？周报中午就该交了，每次都要我催。",
+      report: "这么简单的东西都做错，你到底有没有用心？",
+      partner: "你每次都这样，说好的事又忘了，算了，随便你吧。",
+      family: "跟你说了多少遍别乱买东西，你就是不听。",
+      friend: "借的钱都三个月了，你是不是忘了？",
+    },
+    reply: {
+      client: "你们这个方案也太贵了吧，别家便宜一半。",
+      boss: "这个项目怎么还没进展？下周一必须给我结果。",
+      colleague: "这个需求昨天不是说好了吗？怎么今天又改，你们能不能想清楚再提？",
+      report: "这个活我真干不了，太多了。",
+      partner: "你根本就不在乎我。",
+      family: "你都多大了还不找对象，我们都替你着急。",
+      friend: "上次聚会你又没来，是不是不想跟我们玩了？",
+    },
+  };
+
+  const refreshPlaceholder = () => { text.placeholder = examples[state.mode][state.who]; };
+
+  document.querySelectorAll("[data-key]").forEach((group) => {
+    group.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        group.querySelectorAll("button").forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        state[group.dataset.key] = btn.dataset.value;
+        refreshPlaceholder();
+      });
+    });
+  });
+  refreshPlaceholder();
+
+  async function loadPublic() {
+    try {
+      const d = await (await fetch("/health")).json();
+      const sel = $("model");
+      const keep = sel.value || localStorage.getItem("qs-model");
+      sel.innerHTML = "";
+      (d.models || []).forEach((m) => {
+        const o = document.createElement("option");
+        o.value = m; o.textContent = m;
+        sel.appendChild(o);
+      });
+      sel.value = (d.models || []).includes(keep) ? keep : d.default_model;
+      $("status").classList.toggle("mock", !!d.mock || !d.configured);
+      $("mock").classList.toggle("hide", !d.mock);
+      $("statusText").textContent = d.mock ? "示例模式" : d.configured ? "已连接" : "未配置模型接口";
+    } catch (_) {
+      $("statusText").textContent = "未连接";
+    }
+  }
+  loadPublic();
+  $("model").addEventListener("change", (e) => localStorage.setItem("qs-model", e.target.value));
+
+  text.addEventListener("input", () => {
+    const n = text.value.length;
+    $("count").textContent = `${n} / 800`;
+    $("count").classList.toggle("warn", n > 700);
+  });
+  text.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); submit(); }
+  });
+
+  document.querySelectorAll(".copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($(btn.dataset.target).textContent); } catch (_) { return; }
+      btn.textContent = "已复制";
+      btn.classList.add("done");
+      setTimeout(() => { btn.textContent = "复制"; btn.classList.remove("done"); }, 1600);
+    });
+  });
+
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function markOriginal(src, triggers) {
+    const spans = [];
+    (triggers || []).forEach((t) => {
+      const i = t.text ? src.indexOf(t.text) : -1;
+      if (i >= 0) spans.push([i, i + t.text.length]);
+    });
+    spans.sort((a, b) => a[0] - b[0]);
+    let out = "", pos = 0;
+    spans.forEach(([s, e]) => {
+      if (s < pos) return;
+      out += esc(src.slice(pos, s)) + "<mark>" + esc(src.slice(s, e)) + "</mark>";
+      pos = e;
+    });
+    return out + esc(src.slice(pos));
+  }
+
+  const markSlots = (s) => esc(s).replace(/【([^】]*)】/g, '<span class="slot">【$1】</span>');
+
+  function skeleton(on) {
+    $("result").classList.remove("hide");
+    const sk = '<div class="skel"><span style="width:92%"></span><span style="width:78%"></span><span style="width:64%"></span></div>';
+    if (on) {
+      $("original").innerHTML = sk; $("triggers").innerHTML = ""; $("clean").classList.add("hide");
+      $("message").innerHTML = sk; $("short").textContent = "";
+      $("changes").innerHTML = ""; $("ofnr").classList.add("hide");
+      $("meter").className = "meter"; $("riskText").textContent = "";
+    }
+  }
+
+  function render(data, input) {
+    const risk = ["high", "medium", "low"].includes(data.risk) ? data.risk : "medium";
+    const isReply = state.mode === "reply";
+    $("mockResult").classList.toggle("hide", !data.mock);
+    $("checkTitle").textContent = isReply ? "对方的原话" : "原话体检";
+    $("meter").className = "meter " + risk + (isReply ? " hide" : "");
+    $("riskText").textContent = { high: "容易吵起来", medium: "有点冲", low: "问题不大" }[risk];
+
+    $("original").innerHTML = isReply ? esc(input) : markOriginal(input, data.triggers);
+    $("triggers").innerHTML = "";
+    if (!isReply) {
+      (data.triggers || []).forEach((t) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="tag">${esc(t.text || "")}</span><span class="why">${esc(t.why || "")}</span>`;
+        $("triggers").appendChild(li);
+      });
+    }
+    $("clean").classList.toggle("hide", isReply || (data.triggers || []).length > 0);
+
+    $("message").innerHTML = markSlots(data.message || "");
+    $("short").textContent = data.short || "";
+    $("changes").innerHTML = "";
+    (data.changes || []).forEach((c) => {
+      const li = document.createElement("li");
+      li.textContent = c;
+      $("changes").appendChild(li);
+    });
+    const o = data.ofnr || {};
+    $("o").textContent = o.observation || "—";
+    $("f").textContent = o.feeling || "—";
+    $("n").textContent = o.need || "—";
+    $("r").textContent = o.request || "—";
+    $("ofnr").classList.remove("hide");
+
+    ["checkPanel", "answerPanel", "changesPanel"].forEach((id, k) => {
+      const el = $(id);
+      el.classList.remove("reveal"); void el.offsetWidth;
+      el.style.animationDelay = `${k * 90}ms`;
+      el.classList.add("reveal");
+    });
+  }
+
+  async function submit() {
+    const value = text.value.trim();
+    if (!value) { text.focus(); return; }
+    const go = $("go");
+    go.disabled = true;
+    $("goText").textContent = "正在改写";
+    $("err").classList.add("hide");
+    skeleton(true);
+    if (window.innerWidth < 900) $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    try {
+      const res = await fetch("/api/rewrite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: value, ...state, model: $("model").value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "改写失败，请再试一次");
+      render(data, value);
+    } catch (e) {
+      $("result").classList.add("hide");
+      $("err").textContent = e.message === "Failed to fetch" ? "连不上服务，请确认终端里的程序还在运行" : e.message;
+      $("err").classList.remove("hide");
+    } finally {
+      go.disabled = false;
+      $("goText").textContent = "帮我改";
+    }
+  }
+
+  $("go").addEventListener("click", submit);
+
+  /* settings drawer */
+  const cfg = { token: sessionStorage.getItem("qs-admin") || "", models: [], enabled: new Set(), def: "", remote: [] };
+
+  function setMsg(id, text, ok) {
+    $(id).textContent = text || "";
+    $(id).className = text ? (ok ? "msg-ok" : "msg-bad") : "";
+  }
+
+  function openDrawer() {
+    $("drawer").classList.add("open"); $("scrim").classList.add("open");
+    $("drawer").setAttribute("aria-hidden", "false");
+    if (cfg.token) unlock(cfg.token, true); else showLock();
+  }
+  function closeDrawer() {
+    $("drawer").classList.remove("open"); $("scrim").classList.remove("open");
+    $("drawer").setAttribute("aria-hidden", "true");
+  }
+  function showLock() {
+    $("lockView").classList.remove("hide"); $("configView").classList.add("hide");
+    $("drawerActionText").textContent = "解锁"; setMsg("saveMsg", "");
+    setTimeout(() => $("token").focus(), 300);
+  }
+
+  const adminFetch = (url, opts = {}) => fetch(url, {
+    ...opts,
+    headers: { "Content-Type": "application/json", "X-Admin-Token": cfg.token, ...(opts.headers || {}) },
+  });
+
+  async function unlock(token, silent) {
+    const res = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) });
+    if (!res.ok) {
+      cfg.token = ""; sessionStorage.removeItem("qs-admin");
+      showLock();
+      if (!silent) setMsg("lockMsg", (await res.json()).error, false);
+      return;
+    }
+    cfg.token = token; sessionStorage.setItem("qs-admin", token);
+    const d = await (await adminFetch("/api/admin/config")).json();
+    $("baseUrl").value = d.base_url || "";
+    $("preset").value = [...$("preset").options].some((o) => o.value === d.base_url) ? d.base_url : "";
+    $("apiKey").value = "";
+    $("apiKey").placeholder = d.api_key_masked ? `已保存 ${d.api_key_masked}，要换就重新粘贴` : "粘贴这家平台的 API Key";
+    $("keyHint").textContent = d.api_key_masked
+      ? (d.api_key_source === "env" ? "这把密钥来自环境变量或本机配置文件；在这里粘贴新的会覆盖它" : "密钥已保存在本机，为了安全不再完整显示")
+      : "还没有配置密钥";
+    $("keyHint").className = d.api_key_masked ? "msg-ok" : "";
+    $("limitMin").value = d.limit_per_minute;
+    $("limitDay").value = d.limit_per_day;
+    $("usage").textContent = `今天已经用了 ${d.used_today} 次（重启工具后从 0 算起）。每次改写都花你的模型费用，填 0 表示不限。`;
+    cfg.models = [...d.models]; cfg.enabled = new Set(d.models); cfg.def = d.default_model; cfg.remote = [];
+    renderModels();
+    $("lockView").classList.add("hide"); $("configView").classList.remove("hide");
+    $("drawerActionText").textContent = "保存"; setMsg("lockMsg", ""); setMsg("saveMsg", "");
+  }
+
+  function renderModels() {
+    const q = $("modelSearch").value.trim().toLowerCase();
+    const all = [...new Set([...cfg.models, ...cfg.remote])];
+    all.sort((a, b) => (cfg.enabled.has(b) - cfg.enabled.has(a)) || a.localeCompare(b));
+    const shown = all.filter((m) => !q || m.toLowerCase().includes(q));
+    const list = $("modelList");
+    list.innerHTML = "";
+    if (!shown.length) {
+      list.innerHTML = `<div class="empty-list">${q ? "没有匹配的模型，可以点“添加”手动加入" : "还没有模型，点上面的按钮拉取，或手动添加"}</div>`;
+      return;
+    }
+    shown.forEach((m) => {
+      const row = document.createElement("label");
+      row.className = "model-item";
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = cfg.enabled.has(m);
+      cb.addEventListener("change", () => {
+        if (cb.checked) cfg.enabled.add(m); else cfg.enabled.delete(m);
+        if (!cfg.enabled.has(cfg.def)) cfg.def = [...cfg.enabled][0] || "";
+        renderModels();
+      });
+      const name = document.createElement("code"); name.textContent = m;
+      const def = document.createElement("button");
+      def.type = "button";
+      def.className = "def" + (cfg.def === m ? " on" : "");
+      def.textContent = cfg.def === m ? "默认" : "设为默认";
+      def.addEventListener("click", (e) => { e.preventDefault(); cfg.enabled.add(m); cfg.def = m; renderModels(); });
+      row.append(cb, name, def);
+      list.appendChild(row);
+    });
+  }
+
+  $("openSettings").addEventListener("click", openDrawer);
+  $("closeSettings").addEventListener("click", closeDrawer);
+  $("scrim").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+  $("token").addEventListener("keydown", (e) => { if (e.key === "Enter") $("drawerAction").click(); });
+  $("preset").addEventListener("change", (e) => {
+    if (e.target.value) $("baseUrl").value = e.target.value;
+    cfg.remote = [];
+    renderModels();
+    setMsg("saveMsg", "换了服务商：先填这家的 API Key，再拉取模型列表，取消勾选不属于这家的模型", false);
+  });
+  $("modelSearch").addEventListener("input", renderModels);
+  $("modelSearch").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("addModel").click(); } });
+
+  $("addModel").addEventListener("click", () => {
+    const m = $("modelSearch").value.trim();
+    if (!m) return;
+    if (!cfg.models.includes(m)) cfg.models.push(m);
+    cfg.enabled.add(m);
+    if (!cfg.def) cfg.def = m;
+    $("modelSearch").value = "";
+    renderModels();
+  });
+
+  $("fetchModels").addEventListener("click", async () => {
+    const btn = $("fetchModels");
+    btn.disabled = true; btn.textContent = "正在拉取…";
+    try {
+      const res = await adminFetch("/api/admin/remote-models", {
+        method: "POST",
+        body: JSON.stringify({ base_url: $("baseUrl").value.trim(), api_key: $("apiKey").value.trim() }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error);
+      cfg.remote = d.models;
+      renderModels();
+      setMsg("saveMsg", `拉到 ${d.models.length} 个模型，勾选要开放的`, true);
+    } catch (e) {
+      setMsg("saveMsg", e.message, false);
+    } finally {
+      btn.disabled = false; btn.textContent = "从接口拉取模型列表";
+    }
+  });
+
+  $("drawerAction").addEventListener("click", async () => {
+    if (!$("configView").classList.contains("hide")) {
+      const models = [...cfg.enabled];
+      const res = await adminFetch("/api/admin/config", {
+        method: "POST",
+        body: JSON.stringify({
+          base_url: $("baseUrl").value.trim(),
+          api_key: $("apiKey").value.trim(),
+          models,
+          default_model: cfg.def,
+          limit_per_minute: Number($("limitMin").value || 0),
+          limit_per_day: Number($("limitDay").value || 0),
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok) { setMsg("saveMsg", d.error, false); return; }
+      setMsg("saveMsg", "已保存", true);
+      await loadPublic();
+      await unlock(cfg.token, true);
+      setMsg("saveMsg", "已保存：密钥和模型都已生效，首页的模型列表已更新", true);
+    } else {
+      const t = $("token").value.trim();
+      if (t) unlock(t, false);
+    }
+  });
+</script>
+</body>
+</html>
