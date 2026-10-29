@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="./cover.png" alt="情商外挂 · 话说出口之前，先过一遍" width="640">
+
 # 情商外挂
 
-消息发出去之前，先改一遍。
+**消息发出去之前，先改一遍。**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+
+</div>
+
+---
 
 把一句带火气的话贴进去，选好对方是谁、想要什么语气，它先标出原话里最容易惹毛对方的几个字，再给你一条能直接发的说法。方法来自马歇尔·卢森堡《非暴力沟通》：观察、感受、需要、请求。
 
